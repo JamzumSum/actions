@@ -51,8 +51,7 @@ runs:
         echo "urls=$(echo $urls | tr '\n' ' ')" >> $GITHUB_OUTPUT
       shell: bash
 
-    - uses: actions/checkout@v3
-    - uses: ./.github/actions/url-attach-hash
+    - uses: JamzumSum/actions/url-attach-hash@master
       id: hash
       with:
         files: ${{ inputs.files }}
