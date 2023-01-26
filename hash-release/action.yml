@@ -45,8 +45,10 @@ runs:
             sharp_list="$sharp_list$(basename $file)#"
         done
         filter=".assets[] | select( \"#\" + .name + \"#\" | inside(\"$sharp_list\") ) | .url"
+        echo "::debug::filter"
+
         urls=$(gh release -R ${{ inputs.repo }} view ${{ inputs.tag }} --json assets -q "$filter")
-        echo "urls=$urls" >> $GITHUB_OUTPUT
+        echo "urls=$(echo $urls | tr '\n' ' ')" >> $GITHUB_OUTPUT
       shell: bash
 
     - uses: actions/checkout@v3
