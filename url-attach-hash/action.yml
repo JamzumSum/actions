@@ -24,8 +24,6 @@ runs:
         hash_urls=""
         if [[ $files = "" ]]; then
             for url in $urls; do files="$files$(basename $url) "; done
-        else
-            files=$(ls $files)
         fi
         for url in ${{ inputs.urls }}; do
             if [[ $url =~ "#" ]]; then continue; fi

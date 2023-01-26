@@ -21,11 +21,19 @@ runs:
   steps:
     - name: upload
       run: |
-        gh release -R ${{ inputs.repo }} view ${{ inputs.tag }} --json url > /dev/null
-        if [ $? ]; then
-            gh release -R ${{ inputs.repo }} upload --clobber ${{ inputs.tag }} ${{ inputs.files }}
+        url=$(gh release -R ${{ inputs.repo }} view ${{ inputs.tag }} || exit 0)
+
+        files=""
+        for file in ${{ inputs.files }}; do
+            files="$files$file "
+        done
+
+        if [[ $url != "" ]]; then
+            echo "uploading $files"
+            gh release -R ${{ inputs.repo }} upload ${{ inputs.tag }} $files --clobber
         else
-            gh release -R ${{ inputs.repo }} create ${{ inputs.tag }} ${{ inputs.files }}
+            echo "creating release with $files"
+            gh release -R ${{ inputs.repo }} create ${{ inputs.tag }} $files
         fi
       shell: bash
 
@@ -33,7 +41,7 @@ runs:
       id: query
       run: |
         sharp_list="#"
-        for file in $(ls ${{ inputs.files }}); do
+        for file in ${{ inputs.files }}; do
             sharp_list="$sharp_list$(basename $file)#"
         done
         filter=".assets[] | select( \"#\" + .name + \"#\" | inside(\"$sharp_list\") ) | .url"
