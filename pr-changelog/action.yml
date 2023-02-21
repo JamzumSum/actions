@@ -51,4 +51,4 @@ runs:
       id: git-cliff
       with:
         config: cliff.toml
-        args: ${{ steps.sha.outputs.base-sha }}..${{ inputs.end }} --tag ${{ env.tag }} ${{ inputs.args }}
+        args: --strip header ${{ steps.sha.outputs.base-sha }}..${{ inputs.end }} --tag ${{ env.tag }} ${{ inputs.args }}

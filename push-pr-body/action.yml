@@ -28,8 +28,8 @@ runs:
         body: ${{ inputs.body }}
         comment: |
           Hi! Thanks for opening pull request!
-          - **request for review** to trigger test actions
-          - **ready for review** to build and deploy docs
+          - **request for review** to trigger test actions and build docs (and docker image)
+          - **merge** to publish docs (and docker image)
       run: |
         number=$(gh pr list --base ${base} --head ${head} --state open --json number -q ".[0] .number")
         if [[ $number = "" ]]; then

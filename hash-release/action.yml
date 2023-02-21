@@ -11,6 +11,10 @@ inputs:
     description: upload to which repo
     required: true
     default: ${{ github.repository }}
+  notes:
+    description: release notes
+    required: false
+    default: ''
 outputs:
   urls:
     description: url to uploaded files, with sha256 as url fragment
@@ -20,6 +24,8 @@ runs:
   using: composite
   steps:
     - name: upload
+      env:
+        notes: ${{ inputs.notes }}
       run: |
         url=$(gh release -R ${{ inputs.repo }} view ${{ inputs.tag }} || exit 0)
 
@@ -30,7 +36,7 @@ runs:
 
         if [[ $url != "" ]]; then
             echo "uploading $files"
-            gh release -R ${{ inputs.repo }} upload ${{ inputs.tag }} $files --clobber
+            gh release -R ${{ inputs.repo }} upload ${{ inputs.tag }} $files --clobber -n "$notes"
         else
             echo "creating release with $files"
             gh release -R ${{ inputs.repo }} create ${{ inputs.tag }} $files
