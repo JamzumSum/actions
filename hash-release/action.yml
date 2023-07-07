@@ -36,10 +36,11 @@ runs:
 
         if [[ $url != "" ]]; then
             echo "uploading $files"
-            gh release -R ${{ inputs.repo }} upload ${{ inputs.tag }} $files --clobber -n "$notes"
+            gh release -R ${{ inputs.repo }} edit   ${{ inputs.tag }} -n "$notes"
+            gh release -R ${{ inputs.repo }} upload ${{ inputs.tag }} $files --clobber
         else
             echo "creating release with $files"
-            gh release -R ${{ inputs.repo }} create ${{ inputs.tag }} $files
+            gh release -R ${{ inputs.repo }} create ${{ inputs.tag }} $files -n "$notes"
         fi
       shell: bash
 
