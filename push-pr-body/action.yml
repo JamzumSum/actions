@@ -20,17 +20,32 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Generate greeting
+      id: greeting
+      shell: bash
+      run: |
+        f=(.github/workflows/test?.yml)
+        if [[ -f "${f[0]}" ]]; then
+          request="- **request for review** to trigger test actions"
+        fi
+        if [ -f .github/workflows/sphinx.yml ]; then
+          merge="- **merge** to publish docs"
+          if [[ request != "" ]]; then request="${request} and build docs"; fi
+        fi
+        if [ -f .github/workflows/docker.yml ]; then
+          publish="- **ready to review** to trigger docker image build test"
+          if [[ merge != "" ]]; then merge="${merge} and docker image"; fi
+        fi
+        greeting="Hi! Thanks for opening pull request!\n${request}\n${publish}\n${merge}"
+        echo "md=${greeting}" >> $GITHUB_OUTPUT
+
     - id: update
       env:
         GH_TOKEN: ${{ github.token }}
         base: ${{ inputs.base-branch }}
         head: ${{ inputs.head-branch }}
         body: ${{ inputs.body }}
-        comment: |
-          Hi! Thanks for opening pull request!
-          - **request for review** to trigger test actions and build docs 
-          - **ready to review** to trigger docker image build test
-          - **merge** to publish docs (and docker image)
+        comment: ${{ steps.greeting.outputs.md }}
       run: |
         number=$(gh pr list --base ${base} --head ${head} --state open --json number -q ".[0] .number")
         if [[ $number = "" ]]; then
