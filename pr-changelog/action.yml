@@ -30,7 +30,7 @@ runs:
           sha=$(git rev-parse --short refs/remotes/origin/${{ inputs.start }})
           echo "range=${sha}..${{ inputs.end }}" >> $GITHUB_OUTPUT
         else
-          echo "::debug:: ${{ inputs.start }} not exist"
+          echo "::warning:: ${{ inputs.start }} not exist"
         fi
       shell: bash
 

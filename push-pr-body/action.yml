@@ -24,20 +24,26 @@ runs:
       id: greeting
       shell: bash
       run: |
-        f=(.github/workflows/test?.yml)
+        f=(.github/workflows/test*.yml)
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         if [[ -f "${f[0]}" ]]; then
-          request="- **request for review** to trigger test actions"
+          request="- **Request for review** to trigger test actions"
         fi
         if [ -f .github/workflows/sphinx.yml ]; then
-          merge="- **merge** to publish docs"
-          if [[ request != "" ]]; then request="${request} and build docs"; fi
+          merge="- **Merge** to publish docs"
+          if [[ $request != "" ]]; then request="${request} and build docs"; fi
         fi
         if [ -f .github/workflows/docker.yml ]; then
-          publish="- **ready to review** to trigger docker image build test"
-          if [[ merge != "" ]]; then merge="${merge} and docker image"; fi
+          publish="- **Ready to review** to trigger docker image build test"
+          if [[ $merge != "" ]]; then merge="${merge} and docker image"; fi
         fi
-        greeting="Hi! Thanks for opening pull request!\n${request}\n${publish}\n${merge}"
-        echo "md=${greeting}" >> $GITHUB_OUTPUT
+
+        echo "md<<$EOF" >> $GITHUB_OUTPUT
+        echo "Hi! Thanks for opening pull request!" >> $GITHUB_OUTPUT
+        echo "${request}" >> $GITHUB_OUTPUT
+        echo "${publish}" >> $GITHUB_OUTPUT
+        echo "${merge}" >> $GITHUB_OUTPUT
+        echo "$EOF" >> "$GITHUB_OUTPUT"
 
     - id: update
       env:
