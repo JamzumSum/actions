@@ -26,10 +26,11 @@ runs:
   steps:
     - id: sha
       run: |
-        sha=$(git rev-parse --short refs/remotes/origin/${{ inputs.start }})
-        if [[ $sha = "" ]]; then
-            echo "::error:: Failed to get ${{ inputs.start }} sha"
-            exit 1
+        if git rev-parse --verify refs/remotes/origin/${{ inputs.start }} >/dev/null 2>&1; then
+          sha=$(git rev-parse --short refs/remotes/origin/${{ inputs.start }})
+        else
+          echo "::debug:: ${{ inputs.start }} not exist"
+          sha=""
         fi
         echo "base-sha=$sha" >> $GITHUB_OUTPUT
       shell: bash
