@@ -28,11 +28,10 @@ runs:
       run: |
         if git rev-parse --verify refs/remotes/origin/${{ inputs.start }} >/dev/null 2>&1; then
           sha=$(git rev-parse --short refs/remotes/origin/${{ inputs.start }})
+          echo "range=${sha}..${{ inputs.end }}" >> $GITHUB_OUTPUT
         else
           echo "::debug:: ${{ inputs.start }} not exist"
-          sha=""
         fi
-        echo "base-sha=$sha" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: set tag
@@ -52,4 +51,4 @@ runs:
       id: git-cliff
       with:
         config: cliff.toml
-        args: --strip header ${{ steps.sha.outputs.base-sha }}..${{ inputs.end }} --tag ${{ env.tag }} ${{ inputs.args }}
+        args: --strip header ${{ steps.sha.outputs.range }} --tag ${{ env.tag }} ${{ inputs.args }}
