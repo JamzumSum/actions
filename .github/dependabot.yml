@@ -9,13 +9,17 @@ updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: github-actions
     directory: "pr-changelog"
+    patterns: ["*"]
     multi-ecosystem-group: workflow
   - package-ecosystem: github-actions
     directory: "push-pr-body"
+    patterns: ["*"]
     multi-ecosystem-group: workflow
   - package-ecosystem: github-actions
     directory: "url-attach-hash"
+    patterns: ["*"]
     multi-ecosystem-group: workflow
   - package-ecosystem: github-actions
     directory: "hash-release"
+    patterns: ["*"]
     multi-ecosystem-group: workflow
