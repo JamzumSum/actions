@@ -1,6 +1,6 @@
 version: 2
 
-multi-ecosystem-group:
+multi-ecosystem-groups:
   workflow:
     schedule:
       interval: daily
